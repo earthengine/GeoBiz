@@ -57,14 +57,18 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void copyDatabase() throws IOException{
-        // Open your local db as the input stream
-        try(InputStream myInput = ApplicationContextProvider.getContext().getAssets().open(DB_NAME)) {
+        InputStream myInput = null;
+        try{
+            myInput = ApplicationContextProvider.getContext().getAssets().open(DB_NAME);
 
             // Path to the just created empty db
             String outFileName = DB_PATH + DB_NAME;
 
+            OutputStream myOutput = null;
+
             // Open the empty db as the output stream
-            try (OutputStream myOutput = new FileOutputStream(outFileName)) {
+            try {
+                myOutput = new FileOutputStream(outFileName);
                 // transfer bytes from the inputfile to the outputfile
                 byte[] buffer = new byte[1024];
                 int length;
@@ -74,8 +78,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
                 // Close the streams
                 myOutput.flush();
+            } finally {
+                if(myOutput!=null)
+                    myOutput.close();
             }
 
+        } finally {
+            if(myInput!=null)
+                myInput.close();
         }
 
     }
