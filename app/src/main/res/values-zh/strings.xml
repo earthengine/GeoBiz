@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">生意小助理</string>
+
+    <string name="title_section1">客户名录</string>
+    <string name="title_section2">排班上活</string>
+    <string name="title_section3">员工资料</string>
+
+    <string name="navigation_drawer_open">打开</string>
+    <string name="navigation_drawer_close">关闭</string>
+
+    <string name="action_example">添加</string>
+
+    <string name="action_settings">设置</string>
+</resources>
