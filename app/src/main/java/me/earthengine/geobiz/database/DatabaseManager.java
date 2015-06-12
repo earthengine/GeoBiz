@@ -1,5 +1,7 @@
 package me.earthengine.geobiz.database;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -23,7 +25,6 @@ import me.earthengine.geobiz.business.CustomerContent;
  */
 public class DatabaseManager extends SQLiteOpenHelper {
 
-    private static final String DB_PATH="/data/data/me.earthengine.geobiz/databases/";
     private static final String DB_NAME="crm_db";
     private static final int DB_VERSION=2;
 
@@ -32,6 +33,26 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public DatabaseManager() {
         super(ApplicationContextProvider.getContext(), DB_NAME, null, DB_VERSION);
+        try {
+            if(!checkDatabase())
+                copyDatabase();
+        } catch(IOException ex){
+            ex.printStackTrace();
+        }
+        database = getWritableDatabase();
+    }
+
+    private boolean checkDatabase(){
+        SQLiteDatabase db = null;
+        try {
+            db = getReadableDatabase();
+            Cursor c = db.rawQuery("select count(*) from Customers",null);
+            c.moveToFirst();
+            return c.getInt(0)>0;
+        } finally {
+            db.close();
+        }
+
     }
 
     public static DatabaseManager instance(){
@@ -40,26 +61,15 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return instance;
     }
 
-    private void createDatabase() throws IOException{
-        boolean haveDb = checkDatabase();
-        if(haveDb)
-            return;
-
-        this.getReadableDatabase();
-        try{
-            copyDatabase();
-        } catch(IOException e){
-            throw new Error("Error copying database");
-        }
-    }
-
     public void copyDatabase() throws IOException{
         InputStream myInput = null;
         try{
-            myInput = ApplicationContextProvider.getContext().getAssets().open(DB_NAME);
+            Context ctx = ApplicationContextProvider.getContext();
+            AssetManager am = ctx.getAssets();
+            myInput = am.open(DB_NAME);
 
             // Path to the just created empty db
-            String outFileName = DB_PATH + DB_NAME;
+            String outFileName = ctx.getDatabasePath(DB_NAME).getAbsolutePath();
 
             OutputStream myOutput = null;
 
@@ -86,37 +96,26 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     }
 
-    private boolean checkDatabase(){
-        SQLiteDatabase db = null;
-        try {
-            String path = DB_PATH + DB_NAME;
-            db = SQLiteDatabase.openDatabase(path, null,
-                    SQLiteDatabase.OPEN_READONLY);
-            return true;
-        } catch (SQLiteException e){
-            return false;
-        } finally {
-            if(db!=null)
-                db.close();
-        }
-    }
-
-    private void openDatabase() throws SQLException {
-        String path = DB_PATH + DB_NAME;
-        database = SQLiteDatabase.openDatabase(path, null,
-                SQLiteDatabase.OPEN_READWRITE);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
-        try {
-            createDatabase();
-            openDatabase();
-        } catch (SQLException e){
-            e.printStackTrace();
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+        db.rawQuery("CREATE TABLE Customers (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "firstName TEXT, " +
+                "lastName TEXT, " +
+                "nameFormat INTEGER DEFAULT 1," +
+                "suburb TEXT, " +
+                "street TEXT, " +
+                "streetType TEXT, " +
+                "streetNo TEXT, " +
+                "frequency TEXT, " +
+                "dueDay INTEGER, " +
+                "amount NUMERIC, " +
+                "contactNumber TEXT, " +
+                "email TEXT, " +
+                "facebook TEXT" +
+                ");",null);
+
+        db.setVersion(DB_VERSION);
     }
 
     @Override
@@ -124,8 +123,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         if(newVersion==DB_VERSION){
             try {
                 copyDatabase();
-            } catch (IOException e){
-                e.printStackTrace();
+            } catch (IOException ex){
+                ex.printStackTrace();
             }
         }
     }
@@ -142,23 +141,25 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void AddCustomers() {
-        Cursor c = database.rawQuery("select * \n" +
-                "\t`id`,\n" +
-                "\t`firstName`,\n" +
-                "\t`lastName`,\n" +
-                "\t`nameFormat`,\n" +
-                "\t`suburb`,\n" +
-                "\t`street`,\n" +
-                "\t`streetType`,\n" +
-                "\t`streetNo`,\n" +
-                "\t`frequency`,\n" +
-                "\t`dueDay`,\n" +
-                "\t`amount`,\n" +
-                "\t`contactNumber`,\n" +
-                "\t`email`,\n" +
-                "\t`facebook`\n" +
-                "from `Customers`", null);
+        String query = "select " +
+                "id," +
+                "firstName," +
+                "lastName," +
+                "nameFormat," +
+                "suburb," +
+                "street," +
+                "streetType," +
+                "streetNo," +
+                "frequency," +
+                "dueDay," +
+                "amount," +
+                "contactNumber," +
+                "email," +
+                "facebook " +
+                "from Customers";
+        Cursor c = database.rawQuery(query, null);
         if(!c.moveToFirst())
+            return;
         do{
             Customer cu = new Customer(c.getInt(0),c.getString(1));
             cu.lastName = c.getString(2);

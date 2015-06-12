@@ -15,7 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 
 
 public class Dashboard extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,CustomersFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -47,20 +47,28 @@ public class Dashboard extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, GetFragment(position + 1))
                 .commit();
+    }
+
+    private Fragment GetFragment(int i) {
+        if(i==1){
+            onSectionAttached(i);
+            return CustomersFragment.newInstance("1","2");
+        }
+        return PlaceholderFragment.newInstance(i);
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.title_customers);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                mTitle = getString(R.string.title_work_schedule);
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                mTitle = getString(R.string.title_workers_info);
                 break;
         }
     }
@@ -99,6 +107,10 @@ public class Dashboard extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(int id) {
     }
 
     /**

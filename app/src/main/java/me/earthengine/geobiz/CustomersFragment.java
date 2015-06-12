@@ -2,7 +2,7 @@ package me.earthengine.geobiz;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-
-import me.earthengine.geobiz.business.Customer;
 import me.earthengine.geobiz.business.CustomerContent;
 
 /**
@@ -25,17 +23,8 @@ import me.earthengine.geobiz.business.CustomerContent;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class CustomersFragment extends Fragment implements AbsListView.OnItemClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+public class CustomersFragment extends Fragment implements AbsListView.OnItemClickListener
+{
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -52,10 +41,6 @@ public class CustomersFragment extends Fragment implements AbsListView.OnItemCli
     // TODO: Rename and change types of parameters
     public static CustomersFragment newInstance(String param1, String param2) {
         CustomersFragment fragment = new CustomersFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -66,14 +51,11 @@ public class CustomersFragment extends Fragment implements AbsListView.OnItemCli
     public CustomersFragment() {
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         // TODO: Change Adapter to display your content
         mAdapter = new ArrayAdapter<>(getActivity(),

@@ -1,14 +1,22 @@
 <resources>
     <string name="app_name">生意小助理</string>
 
-    <string name="title_section1">客户名录</string>
-    <string name="title_section2">排班上活</string>
-    <string name="title_section3">员工资料</string>
+    <string name="title_customers">客户名录</string>
+    <string name="title_work_schedule">排班上活</string>
+    <string name="title_workers_info">员工资料</string>
 
     <string name="navigation_drawer_open">打开</string>
     <string name="navigation_drawer_close">关闭</string>
 
-    <string name="action_example">添加</string>
+    <string name="action_add">添加</string>
 
     <string name="action_settings">设置</string>
+    <string name="customer_firstName">姓</string>
+    <string name="title_activity_edit_customer">客户详情</string>
+    <string name="customer_lastName">名</string>
+    <string name="customer_nameformat">姓名格式</string>
+    <string name="customer_streetName">街道名称</string>
+    <string name="customer_streetNo">门牌号码</string>
+    <string name="customer_streetType">街道类型</string>
+    <string name="customer_suburb">小区名称</string>
 </resources>

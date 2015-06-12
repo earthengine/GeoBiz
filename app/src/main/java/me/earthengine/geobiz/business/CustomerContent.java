@@ -26,6 +26,7 @@ public class CustomerContent {
     public static Map<Integer, Customer> ITEM_MAP = new HashMap<>();
 
     static {
+        DatabaseManager.instance().AddCustomers();
     }
 
     public static void addItem(Customer item) {
